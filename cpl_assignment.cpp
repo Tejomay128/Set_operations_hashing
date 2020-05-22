@@ -7,13 +7,13 @@ using namespace std;
 
 typedef enum{FAILURE,SUCCESS} statuscode;
 
-typedef struct Node_tag
+typedef struct Node_tag         //node in a link list
 {
     string str;
     Node_tag *next;
-}Node;
+}Node;               
 
-typedef struct hash_table
+typedef struct hash_table      //hash table definition, chaining concept
 {
     Node *lists[MAX];
     int size;
@@ -21,7 +21,7 @@ typedef struct hash_table
 
 /*------------------Link list functions-------------------------*/
 
-Node *createNode(string s)
+Node *createNode(string s)      //creates a link list node
 {
     Node *ptr = (Node*)malloc(sizeof(Node));
     ptr->str = s;
@@ -29,7 +29,7 @@ Node *createNode(string s)
     return ptr;
 }
 
-Node *insertNode(Node *lptr,string s)
+Node *insertNode(Node *lptr,string s)    //link list insert at start
 {
     Node *ptr;
     ptr = createNode(s);
@@ -38,7 +38,7 @@ Node *insertNode(Node *lptr,string s)
     return lptr;    
 }
 
-statuscode deleteNode(Node **lptr, string s)
+statuscode deleteNode(Node **lptr, string s)   //searches and deletes the node, if not found, no operation takes place
 {
     statuscode sc = FAILURE;
     Node *ptr,*prev;
@@ -76,21 +76,20 @@ statuscode deleteNode(Node **lptr, string s)
     return sc;
 }
 
-void displayList(Node *lptr)
+void displayList(Node *lptr)    //displays a link list
 {
     Node *iptr = lptr;
-    cout<<"{ ";
     while(iptr!=NULL)
     {
-        cout<<iptr->str<<" ";
+        cout<<"\n"<<iptr->str;
         iptr = iptr->next;
     }
-    cout<<"}\n";
+    cout<<"\n";
 }
 
 /*------------------Link list functions-------------------------*/
 
-int HashFunction(string str)
+int HashFunction(string str)     //converts a string into respective hash value
 {
     long long int add;
     int retval,len;
@@ -105,7 +104,7 @@ int HashFunction(string str)
 }
 /*------------------STATIC---------------------------------*/
 
-bool isElementOf(Set h, string s)
+bool isElementOf(Set h, string s)   //checks whether s in present in Set h
 {
     // cout<<"!!!!!!";
     int index = HashFunction(s);
@@ -120,7 +119,7 @@ bool isElementOf(Set h, string s)
     return retval;
 }
 
-bool isEmpty(Set set)
+bool isEmpty(Set set)       //check whether set is empty
 {
     bool retval = true;
     for(int i=0;i<MAX && retval;i++)
@@ -136,27 +135,27 @@ int size(Set set)
     return set.size;
 }
 
-// string* enumerate(Set set)
-// {
-//     string str[size(set)];
-//     int j = 0;
-//     for(int i=0;i<MAX;i++)
-//     {
-//         Node *iptr = set.lists[i];
-//         while(iptr!=NULL)
-//         {
-//             str[i++] = iptr->str;    
-//             iptr = iptr->next;
-//         }
-//     }
-//     return str;
-// }
+Node *enumerate(Set set)     //returns a single link list comprising of all the elements in set
+{
+    Node *lptr = NULL;
+    Node *iptr;
+    for(int i=0;i<MAX;i++)
+    {
+        iptr = set.lists[i];
+        while(iptr!=NULL)
+        {
+            lptr = insertNode(lptr,iptr->str);
+            iptr = iptr->next;
+        }
+    }
+    return lptr;
+}
 
 /*------------------STATIC---------------------------------*/
 
 /*------------------DYNAMIC---------------------------------*/
 
-void initSet(Set* h)
+void initSet(Set* h)       //initializes set
 {
     for(int i=0;i<MAX;i++)
     {
@@ -165,14 +164,14 @@ void initSet(Set* h)
     h->size = 0;
 }
 
-Set* create()
+Set* create()           //dynamic memory allocation for set
 {
     Set* set = (Set*)malloc(sizeof(Set));
     initSet(set);
     return set;
 }
 
-void addInSet(Set *h, string s)
+void addInSet(Set *h, string s)    //adds a string s in set
 {
     // cout<<"@@@@";
     int index;
@@ -184,7 +183,7 @@ void addInSet(Set *h, string s)
     }
 }
 
-void removeInSet(Set *set, string s)
+void removeInSet(Set *set, string s)     //removes a string s from set
 {
     int index;
     index = HashFunction(s);
@@ -196,7 +195,7 @@ void removeInSet(Set *set, string s)
 /*------------------DYNAMIC---------------------------------*/
 
 
-Set build(string s[],int n)
+Set build(string s[],int n)       //given an array of strings, a set is built from those elements
 {
     Set set;
     initSet(&set);
@@ -207,7 +206,7 @@ Set build(string s[],int n)
     return set;
 }
 
-Set unionOfSets(Set set1,Set set2)
+Set unionOfSets(Set set1,Set set2)    //returns the union of two sets
 {
     Node *iptr;
     for(int i=0;i<MAX;i++)
@@ -222,7 +221,7 @@ Set unionOfSets(Set set1,Set set2)
     return set1;
 }
 
-Set intersectionOfSets(Set set1, Set set2)
+Set intersectionOfSets(Set set1, Set set2)    //returns the intersection of two sets
 {
     Set in;
     initSet(&in);
@@ -241,7 +240,7 @@ Set intersectionOfSets(Set set1, Set set2)
     return in;
 }
 
-Set differenceOfSets(Set set1, Set set2)
+Set differenceOfSets(Set set1, Set set2)   //returns set1-set2
 {
     for(int i=0;i<MAX;i++)
     {
@@ -277,7 +276,7 @@ bool subset(Set set1,Set set2)      //checks whether set1 is a subset of set2
     return retval;
 }
 
-void displaySet(Set *set)
+void displaySet(Set *set)    //displays the whole set
 {
     cout<<"{ ";
     for(int i=0;i<MAX;i++)
@@ -321,7 +320,8 @@ int main()
     displaySet(&set2);   
 
     do{
-        cout<<"\nSelect option :\n1)Add a string to set\n2)Remove a string from set\n3)Union\n4)Intersection\n5)difference\n6)Subset\n";
+        cout<<"\nSelect option :\n1)Add a string to set\n2)Remove a string from set\n3)Union\n4)Intersection\n5)difference\n6)Subset\n7)Enumerate\n";
+        cout<<"Enter :";
         cin>>opt;
         switch(opt)
         {
@@ -392,7 +392,18 @@ int main()
                     else
                         cout<<"\nSet1 is not a subset of set2";    
                     break;    
-                }    
+                }   
+            case 7:
+                {
+                    Node *lptr1,*lptr2;
+                    lptr1 = enumerate(set1);
+                    lptr2 = enumerate(set2);
+                    cout<<"List from set1 :";
+                    displayList(lptr1);
+                    cout<<"\nList from set2 :";
+                    displayList(lptr2);
+                    break;
+                } 
             default:
                 {
                     cout<<"\nWrong choice!!!";
