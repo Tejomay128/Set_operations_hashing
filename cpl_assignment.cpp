@@ -23,7 +23,7 @@ typedef struct hash_table      //hash table definition, chaining concept
 
 Node *createNode(string s)      //creates a link list node
 {
-    Node *ptr = (Node*)malloc(sizeof(Node));
+    Node *ptr = new Node;
     ptr->str = s;
     ptr->next = NULL;
     return ptr;
@@ -49,7 +49,7 @@ statuscode deleteNode(Node **lptr, string s)   //searches and deletes the node, 
             sc = SUCCESS;
             ptr = *lptr;
             *lptr = (*lptr)->next;
-            free(ptr);
+            delete ptr;
         }
         else
         {
@@ -63,7 +63,7 @@ statuscode deleteNode(Node **lptr, string s)   //searches and deletes the node, 
                     sc = SUCCESS;
                     found = true;
                     prev->next = ptr->next;
-                    free(ptr);
+                    delete ptr;
                 }
                 else
                 {
@@ -209,17 +209,21 @@ Set build(string s[],int n)       //given an array of strings, a set is built fr
 Set unionOfSets(Set set1,Set set2)    //returns the union of two sets
 {
     Node *iptr;
+    Set u;
+    initSet(&u);
+    u = set2;
     for(int i=0;i<MAX;i++)
     {
-        iptr = set2.lists[i];
+        iptr = set1.lists[i];
         while(iptr!=NULL)
         {
-            addInSet(&set1,iptr->str);
+            if(!isElementOf(u,iptr->str))
+                addInSet(&u,iptr->str);
             iptr = iptr->next;
         }
     }
-    return set1;
-}
+    return u;
+}   
 
 Set intersectionOfSets(Set set1, Set set2)    //returns the intersection of two sets
 {
@@ -338,7 +342,7 @@ int main()
                     else if(no == '2')
                         addInSet(&set2,str);
                     else
-                        cout<<"\nNot a valid no.";   
+                        cout<<"\nNot a valid no.\n";   
                     displaySet(&set1);
                     displaySet(&set2);         
                     break;
