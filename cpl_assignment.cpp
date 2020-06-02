@@ -246,16 +246,20 @@ Set intersectionOfSets(Set set1, Set set2)    //returns the intersection of two 
 
 Set differenceOfSets(Set set1, Set set2)   //returns set1-set2
 {
+    Set diff;
+    initSet(&diff);
+    
     for(int i=0;i<MAX;i++)
     {
-        Node *iptr = set2.lists[i];
+        Node *iptr = set1.lists[i];
         while(iptr!=NULL)
         {
-            removeInSet(&set1,iptr->str);
+            if(!isElementOf(set2,iptr->str))
+                addInSet(&diff,iptr->str);
             iptr = iptr->next;
         }
     }
-    return set1;
+    return diff;
 }
 
 bool subset(Set set1,Set set2)      //checks whether set1 is a subset of set2
